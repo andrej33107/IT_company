@@ -1,0 +1,63 @@
+название бд (it_company)
+
+-- =====================================================
+-- ТАБЛИЦА: users (пользователи системы)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(64) NOT NULL,
+    role VARCHAR(20) DEFAULT 'user'
+);
+
+-- =====================================================
+-- ТАБЛИЦА: employee (сотрудники)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS employee (
+    employee_code SERIAL PRIMARY KEY,
+    last_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50)
+);
+
+-- =====================================================
+-- ТАБЛИЦА: clients (клиенты)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS clients (
+    client_code SERIAL PRIMARY KEY,
+    last_name VARCHAR(50) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50),
+    telephone VARCHAR(20)
+);
+
+-- =====================================================
+-- ТАБЛИЦА: project (проекты)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS project (
+    project_code SERIAL PRIMARY KEY,
+    project_name VARCHAR(100) NOT NULL,
+    price_project NUMERIC(10, 2) DEFAULT 0,
+    employee_code INTEGER REFERENCES employee(employee_code) ON DELETE SET NULL
+);
+
+-- =====================================================
+-- ТАБЛИЦА: orders (заказы)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS orders (
+    order_code SERIAL PRIMARY KEY,
+    project_code INTEGER NOT NULL REFERENCES project(project_code) ON DELETE CASCADE,
+    client_code INTEGER NOT NULL REFERENCES clients(client_code) ON DELETE CASCADE,
+    readiness_status VARCHAR(50) DEFAULT 'в разработке'
+);
+
+-- =====================================================
+-- ТАБЛИЦА: cheque (чеки)
+-- =====================================================
+CREATE TABLE IF NOT EXISTS cheque (
+    cheque_code SERIAL PRIMARY KEY,
+    project_code INTEGER NOT NULL REFERENCES project(project_code) ON DELETE CASCADE,
+    price_project NUMERIC(10, 2) DEFAULT 0,
+    payment_method VARCHAR(50) DEFAULT 'наличные',
+    cheque_date DATE DEFAULT CURRENT_DATE
+);
